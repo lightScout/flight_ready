@@ -2,12 +2,14 @@ package com.britshbroadcast.flightready
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.britshbroadcast.flightready.databinding.ActivityMainBinding
 import com.britshbroadcast.flightready.receiver.AirPlaneModeReceiver
@@ -18,6 +20,8 @@ class MainActivity : AppCompatActivity(), AirPlaneModeReceiver.AirPlaneModeDeleg
     private val airPlaneModeReceiver = AirPlaneModeReceiver(this)
 
     private lateinit var binding: ActivityMainBinding
+
+    private var REQUEST_CODE = 22
 
     private lateinit var slideInAnimation: Animation
     private lateinit var slideOutAnimation: Animation
@@ -57,6 +61,19 @@ class MainActivity : AppCompatActivity(), AirPlaneModeReceiver.AirPlaneModeDeleg
         }else
            showOverlay()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requestFineLocation()
+    }
+
+    private fun requestFineLocation(){
+        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //Do nothing
+        }else{
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),REQUEST_CODE)
+        }
     }
 
 
